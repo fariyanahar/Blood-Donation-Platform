@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Drive - Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .navbar { 
+            background-color: #dc3545;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .quote { 
+            color: #dc3545;
+            font-style: italic;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .hero-section {
+            background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url('https://images.unsplash.com/photo-1615461066841-6116e61058f4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8Ymxvb2QtZG9uYXRpb258fHx8fHwxNzA5Mzk0Mzk4&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080');
+            background-size: cover;
+            background-position: center;
+            padding: 4rem 0;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+        .btn-outline-light:hover {
+            background-color: #ffffff;
+            color: #dc3545;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="./home.html">
+                <i class="fas fa-heart me-2"></i>Blood Drive
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="btn btn-outline-light me-2 fw-semibold" href="./register.html">Register</a>
+                <a class="btn btn-outline-light me-2 fw-semibold" href="./register-admin.html">Register as Admin</a>
+                <a class="btn btn-light fw-semibold" href="./login.html">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="hero-section text-center p-5">
+            <h1 class="display-4 mb-4 fw-bold">Welcome to Blood Drive</h1>
+            <p class="quote h3 mb-4">"The gift of blood is the gift of life."</p>
+            <p class="lead mb-4">Join our mission to save lives through blood donation. Every drop counts, and your contribution can make a significant difference in someone's life.</p>
+
+        </div>
+    </main>
+
+    <footer class="footer py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0 text-muted">&copy; 2024 Blood Drive. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .navbar { 
+            background-color: #dc3545;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .post-card {
+            transition: transform 0.2s;
+        }
+        .post-card:hover {
+            transform: translateY(-5px);
+        }
+        .urgency-high {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .urgency-medium {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .urgency-low {
+            color: #198754;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="recipient-dashboard.html">
+                <i class="fas fa-heart me-2"></i>Blood Drive
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="btn btn-outline-light me-2 fw-semibold" href="./create-post.html">Create a Post</a>
+                <a class="btn btn-outline-light me-2 fw-semibold" href="./events-recipient.html">Events</a>
+                <a class="btn btn-outline-light me-2 fw-semibold" href="./profile-recipient.html">Profile</a>
+                <button class="btn btn-light fw-semibold" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container my-5">
+        <h2 class="text-danger mb-4">Your Blood Request Posts</h2>
+        <div id="postsContainer" class="row g-4">
+            
+        </div>
+    </main>
+
+    <footer class="footer py-4 mt-5 bg-light border-top">
+        <div class="container text-center">
+            <p class="mb-0 text-muted">&copy; 2024 Blood Drive. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Helper function to map urgency levels to text
+        function mapUrgencyLevel(level) {
+            switch (level) {
+                case 1: return { text: "Low", class: "urgency-low" };
+                case 2: return { text: "Medium", class: "urgency-medium" };
+                case 3: return { text: "High", class: "urgency-high" };
+                default: return { text: "Unknown", class: "" };
+            }
+        }
+
+        // Function to create a post card
+        function createPostCard(post) {
+            const { text: urgencyText, class: urgencyClass } = mapUrgencyLevel(post.urgency);
+            return `
+                <div class="col-md-4" id="post-${post.id}">
+                    <div class="card post-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title ${urgencyClass}">Urgency: ${urgencyText}</h5>
+                            <p class="card-text">
+                                <strong>Blood Type:</strong> ${post.blood_type}<br>
+                                <strong>Needed By:</strong> ${new Date(post.date_needed).toLocaleDateString()}<br>
+                                <strong>Location:</strong> ${post.address}<br>
+                                <strong>Status:</strong> ${post.status}
+                            </p>
+                            <button class="btn btn-danger btn-sm delete-btn" data-id="${post.id}">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Function to fetch and display posts
+        async function fetchPosts() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetch('/api/posts/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    let posts = await response.json();
+                    posts = posts.data;
+                    const postsContainer = document.getElementById('postsContainer');
+                    postsContainer.innerHTML = posts.map(post => createPostCard(post)).join('');
+                    
+                    // Add event listeners for delete buttons
+                    document.querySelectorAll('.delete-btn').forEach(button => {
+                        button.addEventListener('click', handleDeletePost);
+                    });
+                } else {
+                    console.error('Failed to fetch posts');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Function to handle post deletion
+        async function handleDeletePost(event) {
+            const postId = event.target.getAttribute('data-id');
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch('/api/posts', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${token}`
+                    },
+                    body: JSON.stringify({ id: postId })
+                });
+
+                if (response.ok) {
+                    // Remove the post card from the UI
+                    const postCard = document.getElementById(`post-${postId}`);
+                    postCard.parentElement.removeChild(postCard);
+                } else {
+                    console.error('Failed to delete post');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Handle logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+        });
+
+        // Fetch posts when page loads
+        document.addEventListener('DOMContentLoaded', fetchPosts);
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
+</body>
+</html>
